@@ -1,5 +1,6 @@
 import random
 
+
 RULESETS = {
     'default': {
         'rock': ['scissors'],
@@ -90,7 +91,7 @@ class Game:
             raise TypeError('max_rounds must be an integer')
         self.max_rounds = max_rounds
 
-    def find_winner(self):
+    def find_round_winner(self):
         if self.players[0].current_hand == self.players[1].current_hand:
             self.round_result = 'draw'
         else:
@@ -99,6 +100,7 @@ class Game:
                 self.round_winner_index = 0
             else:
                 self.round_winner_index = 1
+            self.players[self.round_winner_index].win_round()
 
     def next_round(self):
         self.current_round += 1
@@ -115,12 +117,15 @@ class Game:
             player.reset_score()
 
     def report_round(self):
-        message = f'{self.players[0].name} chose {self.players[0].current_hand.name}'
-        message += f' and {self.players[1].name} chose {self.players[1].current_hand.name}. '
+        message = f'Round {self.current_round + 1}: '
+        message += f'{self.players[0].name} chose {self.players[0].current_hand.name} '
+        message += f'and {self.players[1].name} chose {self.players[1].current_hand.name}. '
         if self.round_result == 'draw':
             message += 'Round was a draw.'
         else:
             message += f'{self.players[self.round_winner_index].name} won.'
+        message += f'\n{self.players[0].name} has {self.players[0].score} points '
+        message += f'and {self.players[1].name} has {self.players[1].score} points.'
         return message
 
     def report_winner(self):
@@ -129,16 +134,3 @@ class Game:
         if self.players[0].score > self.players[1].score:
             return f'{self.players[0].name} won with a score of {self.players[0].score} vs {self.players[1].score}.'
         return f'{self.players[1].name} won with a score of {self.players[1].score} vs {self.players[0].score}.'
-
-
-if __name__ == '__main__':
-    game = Game()
-
-    game.create_player('kiran')
-    game.create_player('computer', True)
-
-    game.players[0].choose_hand('rock')
-    game.players[1].choose_hand()
-
-    game.find_winner()
-    print(game.report_round())
