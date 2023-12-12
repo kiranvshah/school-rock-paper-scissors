@@ -17,20 +17,25 @@ RULESETS = {
 
 
 class Hand:
-    def __init__(self, name: str, ruleset_name='default'):
+    ruleset: dict[str, list[str]] = RULESETS['default']
+    allowable_hands: tuple[str] = tuple(ruleset.keys())
+
+    def __init__(self, name: str):
         self.name = name
-        self.ruleset_name = ruleset_name
-        self.ruleset = RULESETS[ruleset_name]
-        self.allowable_hands: tuple[str] = tuple(self.ruleset.keys())
 
     def __repr__(self):
-        return f'Move({self.name}, {self.ruleset_name})'
+        return f'Move({self.name})'
 
     def __gt__(self, other):
         return other.name in self.ruleset[self.name]
 
     def __eq__(self, other):
         return self.name == other.name
+
+    @classmethod
+    def set_ruleset(cls, ruleset_name: str):
+        cls.ruleset = RULESETS[ruleset_name]
+        cls.allowable_hands = tuple(cls.ruleset.keys())
 
 
 class Player:
@@ -64,8 +69,8 @@ class ComputerPlayer(Player):
     def __init__(self, name):
         super().__init__(name)
 
-    def choose_hand(self, human_choice: Hand):
-        self.current_hand = Hand(random.choice(human_choice.ruleset.keys()), human_choice.ruleset_name)
+    def choose_hand(self):
+        self.current_hand = Hand(random.choice(Hand.allowable_hands))
 
 
 class Game:
