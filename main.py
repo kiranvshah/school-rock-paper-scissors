@@ -40,7 +40,7 @@ class Hand:
 
 class Player:
     def __init__(self, name: str):
-        self.name = name
+        self.name = name.title()
         self.score = 0
         self.current_hand: None | Hand = None
 
@@ -61,8 +61,8 @@ class HumanPlayer(Player):
     def __init__(self, name: str):
         super().__init__(name)
 
-    def choose_hand(self, choice: Hand):
-        self.current_hand = choice
+    def choose_hand(self, choice: str):
+        self.current_hand = Hand(choice)
 
 
 class ComputerPlayer(Player):
@@ -121,6 +121,7 @@ class Game:
             message += 'Round was a draw.'
         else:
             message += f'{self.players[self.round_winner_index].name} won.'
+        return message
 
     def report_winner(self):
         if self.players[0].score == self.players[1].score:
@@ -130,8 +131,15 @@ class Game:
         return f'{self.players[1].name} won with a score of {self.players[1].score} vs {self.players[0].score}.'
 
 
-
-
 if __name__ == '__main__':
-    p = Player('kiran')
-    print(p)
+    human = HumanPlayer('kiran')
+    computer = ComputerPlayer('computer')
+    game = Game()
+    game.add_player(human)
+    game.add_player(computer)
+
+    human.choose_hand('rock')
+    computer.choose_hand()
+
+    game.find_winner()
+    print(game.report_round())
