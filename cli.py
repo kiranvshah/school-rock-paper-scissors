@@ -1,5 +1,5 @@
 import pyinputplus
-from main import Game, HumanPlayer, Hand
+from main import Game, HumanPlayer, Hand, RULESETS
 
 
 class Clinterface:
@@ -20,6 +20,13 @@ class Clinterface:
         ) == 'yes':
             max_rounds = pyinputplus.inputInt('How many rounds should be in a game? ', min=1, max=100)
             self.game.set_max_rounds(max_rounds)
+        if pyinputplus.inputYesNo(
+                f'The current ruleset is set to {Hand.ruleset_name}. Would you like to change it? '
+        ) == 'yes':
+            Hand.set_ruleset(pyinputplus.inputChoice(
+                tuple(RULESETS.keys()),
+                f'Choose a ruleset from {", ".join(RULESETS.keys())}: '
+            ))
 
     def get_choices(self):
         for player in self.game.players:

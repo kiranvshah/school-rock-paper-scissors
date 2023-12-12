@@ -18,7 +18,8 @@ RULESETS = {
 
 
 class Hand:
-    ruleset: dict[str, list[str]] = RULESETS['default']
+    ruleset_name = 'default'
+    ruleset: dict[str, list[str]] = RULESETS[ruleset_name]
     allowable_hands: tuple[str] = tuple(ruleset.keys())
 
     def __init__(self, name: str):
@@ -35,6 +36,7 @@ class Hand:
 
     @classmethod
     def set_ruleset(cls, ruleset_name: str):
+        cls.ruleset_name = ruleset_name
         cls.ruleset = RULESETS[ruleset_name]
         cls.allowable_hands = tuple(cls.ruleset.keys())
 
