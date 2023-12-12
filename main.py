@@ -77,13 +77,13 @@ class Game:
     def __init__(self):
         self.current_round = 0
         self.max_rounds = 10
-        self.players: list[Player, Player] = []
+        self.players: list[HumanPlayer | ComputerPlayer] = []
         self.round_result: None | str = None
         self.round_winner: None | Player = None
         self.round_winner_index: int = -1
 
-    def add_player(self, player: Player):
-        self.players.append(player)
+    def create_player(self, name: str, is_computer: bool = False):
+        self.players.append(ComputerPlayer(name) if is_computer else HumanPlayer(name))
 
     def set_max_rounds(self, max_rounds: int):
         if not isinstance(max_rounds, int):
@@ -132,14 +132,13 @@ class Game:
 
 
 if __name__ == '__main__':
-    human = HumanPlayer('kiran')
-    computer = ComputerPlayer('computer')
     game = Game()
-    game.add_player(human)
-    game.add_player(computer)
 
-    human.choose_hand('rock')
-    computer.choose_hand()
+    game.create_player('kiran')
+    game.create_player('computer', True)
+
+    game.players[0].choose_hand('rock')
+    game.players[1].choose_hand()
 
     game.find_winner()
     print(game.report_round())
