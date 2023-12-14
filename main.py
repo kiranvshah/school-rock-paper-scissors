@@ -26,7 +26,7 @@ class Hand:
         self.name = name
 
     def __repr__(self):
-        return f'Move({self.name})'
+        return f'Hand({self.name})'
 
     def __gt__(self, other):
         return other.name in self.ruleset[self.name]
