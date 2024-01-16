@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from main import Game, Hand, RULESETS
+from functools import partial
+from main import Game, Hand, RULESETS, HumanPlayer
 
 
 class GameApp(tk.Tk):
@@ -25,13 +26,14 @@ class GameApp(tk.Tk):
         frame_to_show.pack(expand=True, fill=tk.BOTH)
         frame_to_show.set_up()
 
-    def do_round(self):
-        # get choices for each human player
-        ...
-        # report winner
-        ...
-        # next round if not finished else ask to play again
-        ...
+    def end_of_round(self):
+        """
+        Shows a frame that reports the result of a round, and begin the next round if the game is not finished.
+        If the game is finished, shows a frame that asks the player whether they want to play again.
+        """
+        print('round ends now')
+        # todo
+
 
 class SetupFrame(tk.Frame):
     def __init__(self, parent: GameApp):
@@ -123,17 +125,22 @@ class SetupFrame(tk.Frame):
         ruleset = self.ruleset_combobox.get()
         Hand.set_ruleset(ruleset)
 
-        self.parent.do_round()
+        self.parent.show_frame('choose_frame')
 
 
 class ChooseFrame(tk.Frame):
     def __init__(self, parent: GameApp):
         super().__init__()
         self.parent = parent
+        self.current_player: HumanPlayer | None = None
+        self.waiting = tk.BooleanVar()
 
-        self.label = tk.Label(self, text=f'{"kiran"}, choose your hand: ')
-
-        self.buttons = [tk.Button(self, text=option) for option in Hand.allowable_hands]
+        self.label = tk.Label(self)
+        self.buttons = [tk.Button(
+            self,
+            text=option,
+            command=partial(self.make_choice, option),
+        ) for option in Hand.allowable_hands]
 
         self.place_widgets()
 
@@ -145,6 +152,19 @@ class ChooseFrame(tk.Frame):
         self.label.grid(row=0, column=0, columnspan=3, **padding)
         for index, button in enumerate(self.buttons):
             button.grid(row=1, column=index, **padding)
+
+    def set_up(self):
+        for player in self.parent.game.players:
+            if isinstance(player, HumanPlayer):
+                self.current_player = player
+                self.label.config(text=f'{player.name}, choose your hand: ')
+                self.waiting.set(True)
+                self.wait_variable(self.waiting)  # wait for button to be pressed
+        self.parent.end_of_round()
+
+    def make_choice(self, choice: str):
+        self.current_player.choose_hand(choice)
+        self.waiting.set(False)
 
 
 class Results(tk.Frame):
