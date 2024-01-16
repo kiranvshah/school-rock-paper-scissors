@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from main import Game, Hand
+from main import Game, Hand, RULESETS
 
 
 class GameApp(tk.Tk):
@@ -25,6 +25,13 @@ class GameApp(tk.Tk):
         frame_to_show.pack(expand=True, fill=tk.BOTH)
         frame_to_show.set_up()
 
+    def do_round(self):
+        # get choices for each human player
+        ...
+        # report winner
+        ...
+        # next round if not finished else ask to play again
+        ...
 
 class SetupFrame(tk.Frame):
     def __init__(self, parent: GameApp):
@@ -35,35 +42,35 @@ class SetupFrame(tk.Frame):
         self.player_one_label = tk.Label(self, text='Player 1', font=('', 15))
         self.player_one_name_label = tk.Label(self, text='Name:')
         self.player_one_name_entry = tk.Entry(self)
-        player_one_is_computer = tk.BooleanVar()
+        self.player_one_is_computer = tk.BooleanVar(None, False)
         self.player_one_human_radiobutton = ttk.Radiobutton(
-            self, text='Human', variable=player_one_is_computer, value=False,
+            self, text='Human', variable=self.player_one_is_computer, value=False,
         )
         self.player_one_computer_radiobutton = ttk.Radiobutton(
-            self, text='Computer', variable=player_one_is_computer, value=True,
+            self, text='Computer', variable=self.player_one_is_computer, value=True,
         )
 
         # player two
         self.player_two_label = tk.Label(self, text='Player 2', font=('', 15))
         self.player_two_name_label = tk.Label(self, text='Name:')
         self.player_two_name_entry = tk.Entry(self)
-        player_two_is_computer = tk.BooleanVar()
+        self.player_two_is_computer = tk.BooleanVar(None, True)
         self.player_two_human_radiobutton = ttk.Radiobutton(
-            self, text='Human', variable=player_two_is_computer, value=False,
+            self, text='Human', variable=self.player_two_is_computer, value=False,
         )
         self.player_two_computer_radiobutton = ttk.Radiobutton(
-            self, text='Computer', variable=player_two_is_computer, value=True,
+            self, text='Computer', variable=self.player_two_is_computer, value=True,
         )
 
         # game
         self.game_label = tk.Label(self, text='Game', font=('', 15))
         self.max_rounds_label = tk.Label(self, text='Max rounds:')
-        self.max_rounds_entry = tk.Entry(self)
+        self.max_rounds_entry = ttk.LabeledScale(self, from_=1, to=20)
         self.ruleset_label = tk.Label(self, text='Ruleset:')
-        self.ruleset_combobox = ttk.Combobox(self, state='readonly', values=['normal', 'lizard spock'])
+        self.ruleset_combobox = ttk.Combobox(self, state='readonly', values=list(RULESETS.keys()))
         self.ruleset_combobox.current(0)
 
-        self.go_button = tk.Button(self, text='Go', font=('', 15), command=lambda: self.parent.show_frame('choose_frame'))
+        self.go_button = tk.Button(self, text='Go', font=('', 15), command=self.create_game)
 
         self.place_widgets()
 
@@ -95,6 +102,28 @@ class SetupFrame(tk.Frame):
     def set_up(self):
         pass
         # variables can go here
+
+    def create_game(self):
+        # use inputs from tk form to add players / change ruleset etc.
+
+        # create players
+        player_one_name = self.player_one_name_entry.get() or 'Player One'
+        player_one_computer = self.player_one_is_computer.get()
+        self.parent.game.create_player(player_one_name, player_one_computer)
+
+        player_two_name = self.player_two_name_entry.get() or 'Player Two'
+        player_two_computer = self.player_two_is_computer.get()
+        self.parent.game.create_player(player_two_name, player_two_computer)
+
+        # set max rounds
+        max_rounds = self.max_rounds_entry.value
+        self.parent.game.set_max_rounds(max_rounds)
+
+        # set ruleset
+        ruleset = self.ruleset_combobox.get()
+        Hand.set_ruleset(ruleset)
+
+        self.parent.do_round()
 
 
 class ChooseFrame(tk.Frame):
