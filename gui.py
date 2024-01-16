@@ -31,8 +31,14 @@ class GameApp(tk.Tk):
         Shows a frame that reports the result of a round, and begin the next round if the game is not finished.
         If the game is finished, shows a frame that asks the player whether they want to play again.
         """
-        print('round ends now')
-        # todo
+        self.game.find_round_winner()
+        # todo: report round here
+        self.game.next_round()
+        if self.game.is_finished():
+            # todo: ask if wants to play again
+            ...
+        else:
+            self.show_frame('choose_frame')
 
 
 class SetupFrame(tk.Frame):
