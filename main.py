@@ -36,6 +36,9 @@ class Hand:
 
     @classmethod
     def set_ruleset(cls, ruleset_name: str):
+        if ruleset_name not in RULESETS.keys():
+            raise ValueError(f'Provided ruleset name {ruleset_name} does not exist')
+
         cls.ruleset_name = ruleset_name
         cls.ruleset = RULESETS[ruleset_name]
         cls.allowable_hands = tuple(cls.ruleset.keys())
