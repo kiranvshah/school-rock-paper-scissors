@@ -60,7 +60,8 @@ class SetupFrame(tk.Frame):
         self.max_rounds_label = tk.Label(self, text='Max rounds:')
         self.max_rounds_entry = tk.Entry(self)
         self.ruleset_label = tk.Label(self, text='Ruleset:')
-        self.ruleset_combobox = ttk.Combobox(self, values=['normal', 'lizard spock'])
+        self.ruleset_combobox = ttk.Combobox(self, state='readonly', values=['normal', 'lizard spock'])
+        self.ruleset_combobox.current(0)
 
         self.go_button = tk.Button(self, text='Go', font=('', 15), command=lambda: self.parent.show_frame('choose_frame'))
 
