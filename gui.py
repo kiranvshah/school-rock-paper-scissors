@@ -33,11 +33,25 @@ class GameApp(tk.Tk):
         If the game is finished, shows a frame that asks the player whether they want to play again.
         """
         self.game.find_round_winner()
-        tk_messagebox.showinfo(f'Round {self.game.current_round+1}', self.game.report_round())
+        tk_messagebox.showinfo(f'Round {self.game.current_round+1}', self.game.report_round(), parent=self)
         self.game.next_round()
         if self.game.is_finished():
-            # todo: ask if wants to play again
-            ...
+            # report winner ask if user wants to play again
+            response = tk_messagebox.askyesnocancel(
+                'Game over',
+                f'{self.game.report_winner()}\nWould you like to play again with the same options?',
+                detail='Press No to change the settings and Cancel to quit.',
+                parent=self,
+            )
+            if response is None:
+                self.destroy()
+            elif response:
+                # reset game and restart
+                self.game.reset()
+                self.show_frame('choose_frame')
+            else:
+                self.game = Game()
+                self.show_frame('setup_frame')
         else:
             self.show_frame('choose_frame')
 
