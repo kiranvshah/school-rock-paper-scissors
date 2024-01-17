@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox as tk_messagebox
 from functools import partial
 from main import Game, Hand, RULESETS, HumanPlayer
 
@@ -32,7 +33,7 @@ class GameApp(tk.Tk):
         If the game is finished, shows a frame that asks the player whether they want to play again.
         """
         self.game.find_round_winner()
-        # todo: report round here
+        tk_messagebox.showinfo(f'Round {self.game.current_round+1}', self.game.report_round())
         self.game.next_round()
         if self.game.is_finished():
             # todo: ask if wants to play again
@@ -166,6 +167,8 @@ class ChooseFrame(tk.Frame):
                 self.label.config(text=f'{player.name}, choose your hand: ')
                 self.waiting.set(True)
                 self.wait_variable(self.waiting)  # wait for button to be pressed
+            else:
+                player.choose_hand()
         self.parent.end_of_round()
 
     def make_choice(self, choice: str):
