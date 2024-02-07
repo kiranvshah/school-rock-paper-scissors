@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as tk_messagebox
+from PIL import ImageTk, Image
 from functools import partial
 from main import Game, Hand, RULESETS, HumanPlayer
 
