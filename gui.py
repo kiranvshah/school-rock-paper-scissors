@@ -157,11 +157,6 @@ class ChooseFrame(tk.Frame):
         self.waiting = tk.BooleanVar()
 
         self.label = tk.Label(self)
-        self.buttons = [tk.Button(
-            self,
-            text=option,
-            command=partial(self.make_choice, option),
-        ) for option in Hand.allowable_hands]
 
         self.place_widgets()
 
@@ -171,10 +166,19 @@ class ChooseFrame(tk.Frame):
             'pady': 10,
         }
         self.label.grid(row=0, column=0, columnspan=3, **padding)
-        for index, button in enumerate(self.buttons):
-            button.grid(row=1, column=index, **padding)
 
     def set_up(self):
+        padding = {
+            'padx': 5,
+            'pady': 10,
+        }
+        for index, button in enumerate([tk.Button(
+            self,
+            text=option,
+            command=partial(self.make_choice, option),
+        ) for option in Hand.allowable_hands]):
+            button.grid(row=1, column=index, **padding)
+
         for player in self.parent.game.players:
             if isinstance(player, HumanPlayer):
                 self.current_player = player
