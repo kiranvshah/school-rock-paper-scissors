@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as tk_messagebox
+from PIL import ImageTk, Image
 from functools import partial
 from main import Game, Hand, RULESETS, HumanPlayer
 
@@ -161,6 +162,8 @@ class ChooseFrame(tk.Frame):
             self,
             text=option,
             command=partial(self.make_choice, option),
+            image=ImageTk.PhotoImage(Image.open(f'images/{option}.png').resize((64, 64), resample=Image.LANCZOS)),
+            compound='right',
         ) for option in Hand.allowable_hands]
 
         self.place_widgets()
